@@ -16,7 +16,7 @@
     cols ||= columns - [:id]
     o = "<form action='#{url}' method='POST'>\n"
     cols.each do |c|
-      identifier = "#{self.class}-#{id.to_i}-#{c}"
+      identifier = "#{id.to_i}-#{self.class}-#{c}"
       o << "<label for='#{identifier}'>#{c.to_s.capitalize}</label><br />\n"
       o << "<textarea id='#{identifier}' name='model[#{c}]'>#{self.send(c)}</textarea><br />\n"
     end
