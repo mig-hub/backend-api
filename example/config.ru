@@ -1,8 +1,10 @@
 #!/usr/bin/env rackup
 
+::Dir.chdir(::File.dirname(__FILE__)+'/..')
+$:.unshift './lib'
 require 'rubygems'
 require 'test/db'
-require 'lib/backend_api'
+require 'backend_api'
 require 'example/basic_admin'
 
 use ::Rack::ContentLength

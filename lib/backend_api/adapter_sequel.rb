@@ -13,7 +13,7 @@
   # It does not manage multipart
   # Override it
   def backend_form(url, cols=nil, opts={})
-    cols ||= columns - [:id]
+    cols ||= default_backend_columns
     o = "<form action='#{url}' method='POST'>\n"
     cols.each do |c|
       identifier = "#{id.to_i}-#{self.class}-#{c}"
@@ -26,5 +26,10 @@
     o << "<input type='submit' name='save' value='SAVE' />\n"
     o << "</form>\n"
     o
+  end
+  
+  # Can be overridden
+  def default_backend_columns
+    columns - [:id]
   end
 end

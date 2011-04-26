@@ -14,8 +14,9 @@ def req_lint(app)
 end
 dummy_app = proc{|env|[200,{'Content-Type'=>'text/plain'},['dummy']]}
 
+$:.unshift ROOT+'/lib'
 require ROOT+'/test/db.rb'
-require ROOT+'/lib/backend_api.rb'
+require 'backend_api'
 
 describe 'API Misc' do
   should "Send 404 X-cascade if no response at the bottom of the Rack stack - Builder::run" do

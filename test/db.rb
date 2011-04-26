@@ -1,11 +1,12 @@
 require 'sequel'
 ::Sequel::Model.plugin :schema
+::Sequel::Model.plugin :crushyform
 DB = ::Sequel.sqlite
 
 class Haiku < ::Sequel::Model
   set_schema do
     primary_key :id
-    String :title
+    String :title, :crushyform_type=>:stash
     text :body
     Boolean :published, :default => true
   end
