@@ -20,7 +20,7 @@ BASIC_ADMIN = proc{
       create_link = "<p><a href='%s?_destination=%s'>Create %s</a></p>\n" % [api_model_path,escaped_path,model_name]
       list = eval(model_name).all.map do |m|
         api_inst_path = "%s/%s" % [api_model_path,m.id]
-        link = "<a href='%s?_destination=%s'>%s %s</a>\n" % [api_inst_path,escaped_path,model_name,m.id]
+        link = "<a href='%s?_destination=%s'>%s</a>\n" % [api_inst_path,escaped_path,m.to_label]
         delete_form = <<-EOF
         <form action='%s' method='POST'>
         %s

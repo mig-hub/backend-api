@@ -55,7 +55,9 @@ describe 'API Post' do
   should "Send back the appropriate form when the creation is not valid" do
     res = req_lint(BackendAPI.new).post('/haiku', :params => {'model' => {'title' => '13'}})
     res.status.should==400
-    res.body.should==Haiku.new.set('title' => '13').backend_form('/haiku', ['title'])
+    compared = Haiku.new.set('title' => '13')
+    compared.valid?
+    res.body.should==compared.backend_form('/haiku', ['title'])
   end
   should "Accept a destination for when Entry is validated and request is not XHR" do
     res = req_lint(BackendAPI.new(dummy_app)).post('/haiku', :params => {'_destination' => 'http://www.domain.com/list.xml', 'model' => {'title' => 'Destination Summer'}})
@@ -64,7 +66,7 @@ describe 'API Post' do
     Haiku.order(:id).last.title.should=='Destination Summer'
   end
   should "keep destination until form is validated" do
-    req_lint(BackendAPI.new).post('/haiku', :params => {'_destination' => '/', 'model' => {'title' => '13'}}).body.should==Haiku.new.set('title' => '13').backend_form('/haiku', ['title'], :destination => '/')
+    req_lint(BackendAPI.new).post('/haiku', :params => {'_destination' => '/', 'model' => {'title' => '13'}}).body.should.match(/name='_destination'.*value='\/'/)
   end
 end
 
@@ -105,7 +107,9 @@ describe 'API Put' do
   should "Send back the appropriate form when the creation is not valid" do
     res = req_lint(BackendAPI.new).put('/haiku/3', :params => {'model' => {'title' => '13'}})
     res.status.should==400
-    res.body.should==Haiku[3].set('title' => '13').backend_form('/haiku/3', ['title'])
+    compared = Haiku[3].set('title' => '13')
+    compared.valid?
+    res.body.should==compared.backend_form('/haiku/3', ['title'])
   end
   should "Accept a destination for when Update is validated and request is not XHR" do
     res = req_lint(BackendAPI.new(dummy_app)).post('/haiku/3', :params => {'_method' => 'PUT', '_destination' => '/', 'model' => {'title' => 'Spring destination !!!'}})
@@ -114,7 +118,7 @@ describe 'API Put' do
     Haiku[3].title.should=='Spring destination !!!'
   end
   should "keep destination until form is validated" do
-    req_lint(BackendAPI.new).put('/haiku/3', :params => {'_destination' => '/', 'model' => {'title' => '13'}}).body.should==Haiku[3].set('title' => '13').backend_form('/haiku/3', ['title'], :destination => '/')
+    req_lint(BackendAPI.new).put('/haiku/3', :params => {'_destination' => '/', 'model' => {'title' => '13'}}).body.should.match(/name='_destination'.*value='\/'/)
   end
 end
 

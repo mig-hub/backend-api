@@ -16,7 +16,7 @@ end
 
 map '/admin' do
   use ::Rack::Config do |env|
-    env['basic_admin.models'] = [:Haiku]
+    env['basic_admin.models'] = [:Author, :Haiku]
   end
   use BackendAPI
   run ::Rack::Builder.app(&BASIC_ADMIN)
