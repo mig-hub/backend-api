@@ -51,4 +51,9 @@ describe 'Sequel Adapter' do
     Haiku.new.backend_form('/url', nil, {:destination=>"/moon"}).should.match(/name='_destination' value='\/moon'/)
   end
   
+  should 'Make forms with enctype automated' do
+    Haiku.new.backend_form('/url').should.not.match(/enctype='multipart\/form-data'/)
+    Pic.new.backend_form('/url').should.match(/enctype='multipart\/form-data'/)
+  end
+  
 end
