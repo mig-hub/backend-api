@@ -56,4 +56,9 @@ describe 'Sequel Adapter' do
     Pic.new.backend_form('/url').should.match(/enctype='multipart\/form-data'/)
   end
   
+  should 'Be able to change text for the submit button of the form' do
+    Haiku.new.backend_form('/url').should.match(/<input type='submit' name='save' value='SAVE' \/>/)
+    Haiku.new.backend_form('/url', nil, {:submit_text=>'CREATE'}).should.match(/<input type='submit' name='save' value='CREATE' \/>/)
+  end
+  
 end
