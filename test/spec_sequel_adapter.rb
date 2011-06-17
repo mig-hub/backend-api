@@ -61,4 +61,15 @@ describe 'Sequel Adapter' do
     Haiku.new.backend_form('/url', nil, {:submit_text=>'CREATE'}).should.match(/<input type='submit' name='save' value='CREATE' \/>/)
   end
   
+  should 'Have a backend_delete_form method - pure HTTP way of deleting records with HTTP DELETE method' do
+    form = Haiku.first.backend_delete_form('/url')
+    form.should.match(/name='_method' value='DELETE'/)
+    form.should.match(/<input type='submit' name='save' value='X' \/>/)
+    form.scan(/input/).size.should==2 
+    form = Haiku.first.backend_delete_form('/url', {:submit_text=>'Destroy', :destination=>'/moon'})
+    form.should.match(/<input type='submit' name='save' value='Destroy' \/>/)
+    form.should.match(/name='_destination' value='\/moon'/)
+    form.scan(/input/).size.should==3
+  end
+  
 end

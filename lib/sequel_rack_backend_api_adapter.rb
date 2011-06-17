@@ -21,15 +21,17 @@ module ::Sequel::Plugins::RackBackendApiAdapter
     def backend_form(url, cols=nil, opts={})
       cols ||= default_backend_columns
       fields_list = respond_to?(:crushyform) ? crushyform(cols) : backend_fields(cols)
-      o = "<form action='#{url}' method='POST' #{"enctype='multipart/form-data'" if fields_list.match(/type='file'/)}>\n"
+      o = "<form action='#{url}' method='POST' #{"enctype='multipart/form-data'" if fields_list.match(/type='file'/)} class='backend-form'>\n"
       o << fields_list
       method = self.new? ? 'POST' : 'PUT'
-      o << "<input type='hidden' name='_method' value='#{method}' />\n"
+      o << "<input type='hidden' name='_method' value='#{opts[:method] || method}' />\n"
       o << "<input type='hidden' name='_destination' value='#{opts[:destination]}' />\n" unless opts[:destination].nil?
       o << "<input type='submit' name='save' value='#{opts[:submit_text] || 'SAVE'}' />\n"
       o << "</form>\n"
       o
     end
+    
+    def backend_delete_form(url, opts={}); backend_form(url, [], {:submit_text=>'X', :method=>'DELETE'}.update(opts)); end
 
     # Silly but usable form prototype
     # Not really meant to be used in a real case
