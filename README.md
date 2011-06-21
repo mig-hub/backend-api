@@ -1,6 +1,35 @@
 BACKEND API
 ===========
 
+The inspiration for this Rack middleware is the CouchDB API.
+We wanted to create a middleware that provides every URLs you need in order to build a CMS
+while only concentrating on the interface.
+All the database interactions are handled by the API.
+
+The project is made with a Rack middleware and a small adapter for the Sequel ORM.
+One of the chapter explains how to create an adpater for another ORM (if you do one, please share).
+
+Also this tool is part of a toolkit that are made for creating a CMS.
+Here are the others:
+
+- [Crushyform](https://github.com/mig-hub/sequel-crushyform): A Sequel plugin for building forms in a painless way and as flexible as possible.
+- [Stash Magic](https://github.com/mig-hub/stash_magic): A simple attachment system that also handles thumbnails or other styles via ImageMagick. Originaly tested on Sequel ORM but purposedly easy to plug to something else.
+- [Cerberus](https://github.com/mig-hub/cerberus): A Rack middleware for form-based authentication.
+
+This project is still at an early stage so don't hesitate to ask any question if the documentation lacks something.
+And a good way to get started is to try the example in the example folder of this library.
+It is a very basic (but complete) admin system.
+
+Once you are in the root directory of the library, you can start it with:
+
+    rackup example/config.ru
+
+The file `basic_admin.rb` contains the Backend itself and shows how to use the URLs of the API.
+
+You can use it for any kind of Rack application (Sinatra, Ramaze, Merb, Rails...).
+Ramaze/Innate is not the most obvious to use as a middleware, but this is the one I use the most,
+so drop me a line if you don't know how to do.
+
 HOW TO INSTALL
 ==============
 
@@ -14,6 +43,9 @@ HOW TO USE IT
 BackendAPI is a Rack middleware that you have to put before your actual backend/CMS, 
 and generaly after an authentication middleware.
 And it takes care of everything involving interraction with your database.
+
+In reality, it does not HAVE to be with the Backend but it makes sense and that way,
+both share the authentication middleware.
 
 A rackup stack for your application might look like this:
 
@@ -148,3 +180,21 @@ Others are slightly more sophisticated:
 - `Model#default_backend_columns` This the list of columns in the forms when the list of fields is not provided via `fields` option
 - `Model#backend_form( action_url, columns=nil, options={} )` It is only the wrapping of the form without the actual fields. Try to implement it like the Sequel one.
 - `Model#backend_fields( columns )` These are the actual fields. There is a default behavior that basically puts a textarea for everything. That works in most cases but this is meant to be overriden for a better solution. We recommand [Crushyform](https://rubygems.org/gems/sequel-crushyform) for Sequel because we did it so we know it plays well with BackendAPI, and also because you don't have anything more to do. BackendAPI knows you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) and use it to create the fields.
+- `Model#backend_delete_form( action_url, options={})` Basically sugar for Model#backend_form but with an empty array for columns, and these options `{:submit_text=>'X', :method=>'DELETE'}` predefined which you can override. We've seen before that it is for creating DELETE forms.
+
+THANX
+=====
+
+I'd like to thank [Manveru](https://github.com/manveru), [Pistos](https://github.com/pistos) and many others on the #ramaze IRC channel for being friendly, helpful and obviously savy.
+Also I'd like to thank [Konstantine Hasse](https://github.com/rkh) for the same reasons as he helped me many times on #rack issues,
+and because [almost-sinatra](https://github.com/rkh/almost-sinatra) is just made with the 8 nicest lines of code to read.
+
+CHANGE LOG
+==========
+
+0.0.1 First version
+
+COPYRIGHT
+=========
+
+(c) 2011 Mickael Riga - see file LICENSE for details
