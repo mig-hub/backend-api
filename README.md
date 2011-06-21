@@ -9,7 +9,7 @@ All the database interactions are handled by the API.
 The project is made with a Rack middleware and a small adapter for the Sequel ORM.
 One of the chapter explains how to create an adpater for another ORM (if you do one, please share).
 
-Also this tool is part of a toolkit that are made for creating a CMS.
+Also this tool is part of a toolkit that is made for creating a CMS (in a modular way).
 Here are the others:
 
 - [Crushyform](https://github.com/mig-hub/sequel-crushyform): A Sequel plugin for building forms in a painless way and as flexible as possible.
@@ -51,19 +51,19 @@ both share the authentication middleware.
 A rackup stack for your application might look like this:
 
     map '/' do
-		  run Frontend
-		end
-		
-		map '/admin' do
-		  use Rack::Auth::Basic, "your-realm" do |username, password|
-			  [username, password] == ['username', 'password']
-			end
-		  use BackendAPI
-		  run Backend
-		end
+      run Frontend
+    end
+
+    map '/admin' do
+      use Rack::Auth::Basic, "your-realm" do |username, password|
+        [username, password] == ['username', 'password']
+      end
+      use BackendAPI
+      run Backend
+    end
 
 Your backend receives every request that the Restful API doesn't recognize.
-The BackendAPI recognize requests following this scheme:
+The BackendAPI recognizes requests following this scheme:
 
     METHOD /Backend-path/model_class/ID
 
@@ -187,6 +187,7 @@ THANX
 =====
 
 I'd like to thank [Manveru](https://github.com/manveru), [Pistos](https://github.com/pistos) and many others on the #ramaze IRC channel for being friendly, helpful and obviously savy.
+
 Also I'd like to thank [Konstantine Hasse](https://github.com/rkh) for the same reasons as he helped me many times on #rack issues,
 and because [almost-sinatra](https://github.com/rkh/almost-sinatra) is just made with the 8 nicest lines of code to read.
 
