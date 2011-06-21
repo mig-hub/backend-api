@@ -1,6 +1,6 @@
 require 'sequel'
 ::Sequel::Model.plugin :schema
-::Sequel::Model.plugin :crushyform
+::Sequel::Model.plugin :crushyform rescue nil
 DB = ::Sequel.sqlite
 
 class Haiku < ::Sequel::Model

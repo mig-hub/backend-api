@@ -19,6 +19,7 @@ Here are the others:
 This project is still at an early stage so don't hesitate to ask any question if the documentation lacks something.
 And a good way to get started is to try the example in the example folder of this library.
 It is a very basic (but complete) admin system.
+A lot better if you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) installed (nothing more to do except having it installed).
 
 Once you are in the root directory of the library, you can start it with:
 
