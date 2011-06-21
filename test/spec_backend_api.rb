@@ -18,6 +18,10 @@ $:.unshift ROOT+'/lib'
 require ROOT+'/test/db.rb'
 require 'backend_api'
 
+def wrap(title, form) #mock wrapped versions of forms when not XHR
+  BackendAPI::WRAP % [title,form]
+end
+
 describe 'API Misc' do
   should "Send 404 X-cascade if no response at the bottom of the Rack stack - Builder::run" do
     res = req_lint(BackendAPI.new).get('/zzz')
@@ -53,10 +57,16 @@ describe 'API Post' do
     res.status.should==201
   end
   should "Send back the appropriate form when the creation is not valid" do
+    
     res = req_lint(BackendAPI.new).post('/haiku', :params => {'model' => {'title' => '13'}})
     res.status.should==400
     compared = Haiku.new.set('title' => '13')
     compared.valid?
+    res.body.should==wrap('Haiku', compared.backend_form('/haiku', ['title']))
+    
+    # Not wrapped when XHR
+    res = req_lint(BackendAPI.new).post('/haiku', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest", :params => {'model' => {'title' => '13'}})
+    res.status.should==400
     res.body.should==compared.backend_form('/haiku', ['title'])
   end
   should "Accept a destination for when Entry is validated and request is not XHR" do
@@ -72,19 +82,22 @@ end
 
 describe 'API Get' do
   should "Return the form for a fresh entry when no id is provided" do
-    req_lint(BackendAPI.new).get('/haiku').body.should==Haiku.new.backend_form('/haiku')
+    req_lint(BackendAPI.new).get('/haiku').body.should==wrap('Haiku', Haiku.new.backend_form('/haiku'))
   end
   should "Return the form for an update when id is provided" do
-    req_lint(BackendAPI.new).get('/haiku/3').body.should==Haiku[3].backend_form('/haiku/3')
+    req_lint(BackendAPI.new).get('/haiku/3').body.should==wrap('Haiku', Haiku[3].backend_form('/haiku/3'))
   end
   should "Be able to send a form with selected set of fields" do
-    req_lint(BackendAPI.new).get('/haiku', :params => {'fields' => ['title']}).body.should==Haiku.new.backend_form('/haiku', ['title'])
-    req_lint(BackendAPI.new).get('/haiku/3', :params => {'fields' => ['title']}).body.should==Haiku[3].backend_form('/haiku/3', ['title'])
+    req_lint(BackendAPI.new).get('/haiku', :params => {'fields' => ['title']}).body.should==wrap('Haiku', Haiku.new.backend_form('/haiku', ['title']))
+    req_lint(BackendAPI.new).get('/haiku/3', :params => {'fields' => ['title']}).body.should==wrap('Haiku', Haiku[3].backend_form('/haiku/3', ['title']))
   end
   should "Update the entry before building the form if model parameter is used" do
     update = {'title' => 'Changed'}
-    req_lint(BackendAPI.new).get('/haiku', :params => {'model' => update}).body.should==Haiku.new.set(update).backend_form('/haiku')
-    req_lint(BackendAPI.new).get('/haiku/3', :params => {'model' => update}).body.should==Haiku[3].set(update).backend_form('/haiku/3')
+    req_lint(BackendAPI.new).get('/haiku', :params => {'model' => update}).body.should==wrap('Haiku', Haiku.new.set(update).backend_form('/haiku'))
+    req_lint(BackendAPI.new).get('/haiku/3', :params => {'model' => update}).body.should==wrap('Haiku', Haiku[3].set(update).backend_form('/haiku/3'))
+  end
+  should "Return a partial if the request is XHR" do
+    req_lint(BackendAPI.new).get('/haiku', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest").body.should==Haiku.new.backend_form('/haiku')
   end
 end
 
@@ -105,10 +118,16 @@ describe 'API Put' do
     res.status.should==201
   end
   should "Send back the appropriate form when the creation is not valid" do
+    
     res = req_lint(BackendAPI.new).put('/haiku/3', :params => {'model' => {'title' => '13'}})
     res.status.should==400
     compared = Haiku[3].set('title' => '13')
     compared.valid?
+    res.body.should==wrap('Haiku', compared.backend_form('/haiku/3', ['title']))
+    
+    # Not wrapped when XHR
+    res = req_lint(BackendAPI.new).put('/haiku/3', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest", :params => {'model' => {'title' => '13'}})
+    res.status.should==400
     res.body.should==compared.backend_form('/haiku/3', ['title'])
   end
   should "Accept a destination for when Update is validated and request is not XHR" do
