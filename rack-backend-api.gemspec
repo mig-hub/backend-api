@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.require_path = './lib'
   s.author = "Mickael Riga"
   s.email = "mig@mypeplum.com"
-  s.homepage = "http://github.com/mig-hub/rack-backend-api"
+  s.homepage = "http://github.com/mig-hub/backend-api"
 end
