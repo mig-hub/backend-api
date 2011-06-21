@@ -26,6 +26,7 @@ module ::Sequel::Plugins::RackBackendApiAdapter
       method = self.new? ? 'POST' : 'PUT'
       o << "<input type='hidden' name='_method' value='#{opts[:method] || method}' />\n"
       o << "<input type='hidden' name='_destination' value='#{opts[:destination]}' />\n" unless opts[:destination].nil?
+      o << "<input type='hidden' name='_submit_text' value='#{opts[:submit_text]}' />\n" unless opts[:submit_text].nil?
       o << "<input type='submit' name='save' value='#{opts[:submit_text] || 'SAVE'}' />\n"
       o << "</form>\n"
       o

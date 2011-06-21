@@ -109,6 +109,10 @@ You can do that with Rack::Utils :
 
     ::Rack::Utils.escape "/admin/list/blog_post"
 
+The option `:submit_text` is also available through the API as `_submit_text`.
+It says "SAVE" by default but you might want it to say "CREATE" and "UPDATE" in appropriate cases,
+like we did in the example.
+
 A LITTLE BIT OF JAVASCRIPT
 ==========================
 

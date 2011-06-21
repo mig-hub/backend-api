@@ -17,10 +17,10 @@ BASIC_ADMIN = proc{
       model_name = env['PATH_INFO'][1..-1]
       api_model_path = "%s/%s" % [root_path,model_name]
       title = "<h1>%s List</h1>\n" % [model_name]
-      create_link = "<p><a href='%s?_destination=%s'>Create %s</a></p>\n" % [api_model_path,escaped_path,model_name]
+      create_link = "<p><a href='%s?_destination=%s&_submit_text=CREATE'>Create %s</a></p>\n" % [api_model_path,escaped_path,model_name]
       list = eval(model_name).all.map do |m|
         api_inst_path = "%s/%s" % [api_model_path,m.id]
-        link = "<a href='%s?_destination=%s'>%s</a>\n" % [api_inst_path,escaped_path,m.to_label]
+        link = "<a href='%s?_destination=%s&_submit_text=UPDATE'>%s</a>\n" % [api_inst_path,escaped_path,m.to_label]
         delete_form = m.backend_delete_form(api_inst_path, {:destination=>path})
         link+delete_form
       end.join
