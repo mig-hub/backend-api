@@ -32,7 +32,7 @@ A rackup stack for your application might look like this:
 Your backend receives every request that the Restful API doesn't recognize.
 The BackendAPI recognize requests following this scheme:
 
-    METHOD /path-to-the-middleware/model_class/ID
+    METHOD /Backend-path/model_class/ID
 
 The ID is not always relevant.
 So if you have a model class called BlogPost and you want to get the form for the entry with ID 4:
@@ -53,12 +53,16 @@ and therefore use the right action and method for POST and PUT requests.
 The problem sometimes with a Restful API is that in real life,
 in spite of the fact that not every requests are GET or POST it is sometimes forced.
 The href of a link is always a GET, and the method for a form is
-overriden if it is different form GET or POST.
+overriden if it is not GET or POST.
 
 This is why Rack has a very handy middleware called MethodOverride.
 You don't have to `use` it because BackendAPI puts it on the stack for you.
-Basically when you have it, you can send the method you really wanted in the GET or POST parameter called "_method",
+Basically when you have it, you can send the method you really wanted in the POSTed parameter called "_method",
 and the middleware override the method for you.
+This is how the adapter makes forms with PUT requests.
+
+But unfortunately you can only use MethodOverride on POST requests,
+but you might want to have it on links.
 
 Here is a concrete example:  
 You want to put in your CMS a link for deleting blog post.
@@ -69,40 +73,41 @@ So your link could look like this:
 
     <a href="/admin/blog_post/4?_method=DELETE"> X </a>
 
-But to be honest it is not enough.
-Most of the time, when you do that, you also want to specify the destination,
-the page you'll go to when the job is done:
+But it doesn't work because links are GET requests.
+Fortunately this is a common task so there is a method that makes DELETE buttons available as a form:
 
-    <a href="/admin/blog_post/4?_method=DELETE&_destination=%2Fdestination%2Fpath"> X </a>
+    @blog_post.backend_delete_form("/admin/blog_post/4", { :destination => "/admin/list/blog_post" })
 
-Evidently, do not forget to escape the path.
-It could be done with Rack::Utils
+The `:destination` is where you go when the job is done.
+You also can change the option `:submit_text` which is what the button says.
+By default, the DELETE form button says "X".
 
-    ::Rack::Utils.escape "/destination/path"
-
-So now you know the main options.
-You probably won't use the `_method` one that much because apart from DELETE requests.
-For the others, the form sent by the ORM adapter deals with this.
-But you'll need the `_destination` option in order to specify where to go when the entry is validated.
-Because before it is validated you'll the form again with error messages.
+The `:destination` option is also in the API as `_destination`.
+Use it in order to specify where to go when the entry is validated.
+Because before it is validated you'll get the form again with error messages.
 
 Say we need a link for creating a blog post, and then when validated, we want to go back to the list page:
 
-    <a href="/admin/blog_post?_destination=%2Flist%2Fblog_post"> Create new Blog Post </a>
+    <a href="/admin/blog_post?_destination=%2Fadmin%2Flist%2Fblog_post"> Create new Blog Post </a>
 
-Of course, the page `/list/blog_post` is a page of your Backend/CMS.
+Of course, the page `/admin/list/blog_post` is a page of your Backend/CMS.
 The form will be POSTed because there is no ID, which means it is a new entry.
 On that list page, you could have a list of your posts with an "Edit" link:
 
-    My Interesting Post Number 4 - <a href="/admin/blog_post/4?_destination=%2Flist%2Fblog_post"> Edit </a>
+    My Interesting Post Number 4 - <a href="/admin/blog_post/4?_destination=%2Fadmin%2Flist%2Fblog_post"> Edit </a>
 
 You also have another option called `fields` which allows you to say which fields you want in that form.
 The purpose of that is mainly to be able to edit a single value at a time:
 
-    Title: My Super Blog - <a href="/admin/blog_post/4?fields[]=title&_destination=%2Flist%2Fblog_post"> Edit </a>
+    Title: My Super Blog - <a href="/admin/blog_post/4?fields[]=title&_destination=%2Fadmin%2Flist%2Fblog_post"> Edit </a>
 
 This will make a link to a form for editing the title of that Blog Post.
 Please note that the option `fields` is an array.
+
+Also don't forget to escape the URI like in the examples above.
+You can do that with Rack::Utils :
+
+    ::Rack::Utils.escape "/admin/list/blog_post"
 
 A LITTLE BIT OF JAVASCRIPT
 ==========================

@@ -21,7 +21,7 @@ BASIC_ADMIN = proc{
       list = eval(model_name).all.map do |m|
         api_inst_path = "%s/%s" % [api_model_path,m.id]
         link = "<a href='%s?_destination=%s'>%s</a>\n" % [api_inst_path,escaped_path,m.to_label]
-        delete_form = m.backend_delete_form(api_inst_path, {:destination=>escaped_path})
+        delete_form = m.backend_delete_form(api_inst_path, {:destination=>path})
         link+delete_form
       end.join
       [200,{'Content-Type'=>'text/html'},[title,create_link,list]]
