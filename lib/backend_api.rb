@@ -98,5 +98,4 @@ class BackendAPI
 end
 
 # Require Adapter when known ORM detected
-#require ::File.dirname(__FILE__)+'/backend_api/adapter_sequel' if defined? Sequel
 ::Sequel::Model.plugin :rack_backend_api_adapter if defined? Sequel
