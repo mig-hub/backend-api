@@ -188,7 +188,7 @@ THANX
 
 I'd like to thank [Manveru](https://github.com/manveru), [Pistos](https://github.com/pistos) and many others on the #ramaze IRC channel for being friendly, helpful and obviously savy.
 
-Also I'd like to thank [Konstantine Hasse](https://github.com/rkh) for the same reasons as he helped me many times on #rack issues,
+Also I'd like to thank [Konstantin Haase](https://github.com/rkh) for the same reasons as he helped me many times on #rack issues,
 and because [almost-sinatra](https://github.com/rkh/almost-sinatra) is just made with the 8 nicest lines of code to read.
 
 CHANGE LOG
