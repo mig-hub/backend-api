@@ -203,6 +203,7 @@ CHANGE LOG
 
 0.0.1 First version
 0.0.2 Accept CamelCased class names
+0.0.3 Fix Form mockup
 
 COPYRIGHT
 =========
