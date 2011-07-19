@@ -46,6 +46,7 @@ module ::Sequel::Plugins::RackBackendApiAdapter
         o << "<label for='#{identifier}'>#{c.to_s.capitalize}</label><br />\n"
         o << "<textarea id='#{identifier}' name='model[#{c}]'>#{self.send(c)}</textarea><br />\n"
       end
+      o
     end
 
     # Can be overridden
