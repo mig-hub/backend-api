@@ -173,7 +173,7 @@ If you do one for DataMapper or whatever, please consider contributing
 because it would make BackendAPI more interesting.
 
 The adapter for Sequel is a regular plugin, but you don't have to declare it.
-It is done automatically if the constant `Sequel` is defined.
+It is done automatically if the constant `Sequel` is defined (so you have to require Sequel first).
 
 Here are the methods to implement, most of them are just aliases for having a single name:
 
