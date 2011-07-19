@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,0,1]
+  VERSION = [0,0,2]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -88,7 +88,9 @@ class BackendAPI
   end
   
   def camel_case(s)
-    s.to_s.split('_').map{|e|e.capitalize}.join
+    return if s.nil?
+    c = s[0]
+    c>=65&&c<=90 ? s : s.split('_').map{|e|e.capitalize}.join
   end
   
   def save_and_respond

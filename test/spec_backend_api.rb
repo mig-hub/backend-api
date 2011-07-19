@@ -37,7 +37,17 @@ describe 'API Misc' do
     res = req_lint(BackendAPI.new(dummy_app)).get('/_version')
     res.status.should==200
     res.body.should==BackendAPI::VERSION.join('.')
-  end 
+  end
+  should "Accept CamelCased or under_scrored class names" do
+    # I prefer CamelCased as it only needs to be eval(ed)  
+    # But people are used to under_scrored  
+    # And also Windows servers are case insensitive
+    res1 = req_lint(BackendAPI.new).get('/CamelCasedClass')
+    res1.status.should==200
+    res2 = req_lint(BackendAPI.new).get('/camel_cased_class')
+    res2.status.should==200
+    res1.body.should==res2.body.gsub('camel_cased_class', 'CamelCasedClass')
+  end
 end
 
 describe 'API Post' do

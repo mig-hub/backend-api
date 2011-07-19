@@ -80,6 +80,13 @@ Then if you need to delete the entry with ID 4:
 
     DELETE /admin/blog_post/4
 
+The API also understands a camelcased class name:
+
+    DELETE /admin/BlogPost/4
+
+This is my fave personally, but unfortunately it seems that windows servers are case insensitive.
+Which means that if you have one, you need to stick with the under_scored names.
+
 To be honest, that is almost everything you need because the ORM adapter builds the forms 
 and therefore use the right action and method for POST and PUT requests.
 
@@ -195,6 +202,7 @@ CHANGE LOG
 ==========
 
 0.0.1 First version
+0.0.2 Accept CamelCased class names
 
 COPYRIGHT
 =========

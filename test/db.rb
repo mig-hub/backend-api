@@ -40,6 +40,14 @@ class Pic < ::Sequel::Model
   create_table unless table_exists?
 end
 
+class CamelCasedClass < ::Sequel::Model
+  set_schema do
+    primary_key :id
+    String :name
+  end
+  create_table unless table_exists?
+end
+
 Haiku.create( :title=>'Autumn', :body=>"Rust the ground\nFlush the branches\nReveal the trees" )
 Haiku.create( :title=>'Winter', :body=>"There is snow\nIt covers you\nBut you are still the most beautiful" )
 Haiku.create( :title=>'Spring', :body=>"No inspiration" )
