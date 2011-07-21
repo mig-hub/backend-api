@@ -22,6 +22,27 @@ def wrap(title, form) #mock wrapped versions of forms when not XHR
   BackendAPI::WRAP % [title,form]
 end
 
+class WrappingMiddleware
+  def initialize(app); @app = app; end
+  def call(env)
+    if Rack::Request.new(env)['_no_wrap']
+      status, header, body = @app.call(env)
+      res = Rack::Response.new('<!-- ', status, header)
+      if body.respond_to? :to_str
+        res.write body.to_str
+      elsif body.respond_to?(:each)
+        body.each { |part|
+          res.write part.to_s
+        }
+      end
+      res.write(' -->')
+      res.finish
+    else
+      [200, {'Content-Type'=>'text/plain'}, ['not wrapped']]
+    end
+  end
+end
+
 describe 'API Misc' do
   should "Send 404 X-cascade if no response at the bottom of the Rack stack - Builder::run" do
     res = req_lint(BackendAPI.new).get('/zzz')
@@ -85,8 +106,15 @@ describe 'API Post' do
     res.headers['Location']=='http://www.domain.com/list.xml'
     Haiku.order(:id).last.title.should=='Destination Summer'
   end
-  should "keep destination until form is validated" do
+  should "Keep _destination until form is validated" do
     req_lint(BackendAPI.new).post('/haiku', :params => {'_destination' => '/', 'model' => {'title' => '13'}}).body.should.match(/name='_destination'.*value='\/'/)
+  end
+  should "Keep _no_wrap until form is validated" do
+    compared = Haiku.new.set('title' => '13')
+    compared.valid?
+    res = req_lint(WrappingMiddleware.new(BackendAPI.new)).post('/haiku', :params => {'_no_wrap' => 'true', 'model' => {'title' => '13'}})
+    res.body.should==('<!-- '+compared.backend_form('/haiku',['title'], {:no_wrap=>'true'})+' -->')
+    res.body.should.match(/name='_no_wrap'.*value='true'/)
   end
 end
 
@@ -106,8 +134,10 @@ describe 'API Get' do
     req_lint(BackendAPI.new).get('/haiku', :params => {'model' => update}).body.should==wrap('Haiku', Haiku.new.set(update).backend_form('/haiku'))
     req_lint(BackendAPI.new).get('/haiku/3', :params => {'model' => update}).body.should==wrap('Haiku', Haiku[3].set(update).backend_form('/haiku/3'))
   end
-  should "Return a partial if the request is XHR" do
+  should "Return a partial if the request is XHR or param _no_wrap is used" do
     req_lint(BackendAPI.new).get('/haiku', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest").body.should==Haiku.new.backend_form('/haiku')
+    req_lint(BackendAPI.new).get('/haiku?_no_wrap=true').body.should==Haiku.new.backend_form('/haiku', nil, {:no_wrap=>'true'})
+    req_lint(WrappingMiddleware.new(BackendAPI.new)).get('/haiku?_no_wrap=true').body.should==('<!-- '+Haiku.new.backend_form('/haiku', nil, {:no_wrap=>'true'})+' -->')
   end
 end
 
@@ -148,6 +178,13 @@ describe 'API Put' do
   end
   should "keep destination until form is validated" do
     req_lint(BackendAPI.new).put('/haiku/3', :params => {'_destination' => '/', 'model' => {'title' => '13'}}).body.should.match(/name='_destination'.*value='\/'/)
+  end
+  should "Keep _no_wrap until form is validated" do
+    compared = Haiku[3].set('title' => '13')
+    compared.valid?
+    res = req_lint(WrappingMiddleware.new(BackendAPI.new)).post('/haiku/3', :params => {'_no_wrap' => 'true', 'model' => {'title' => '13'}})
+    res.body.should==('<!-- '+compared.backend_form('/haiku/3',['title'], {:no_wrap=>'true'})+' -->')
+    res.body.should.match(/name='_no_wrap'.*value='true'/)
   end
 end
 

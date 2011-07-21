@@ -164,6 +164,52 @@ nice interface using Ajax and getting the best of what the API has to offer.
 The forms are really meant to be requested via an XHR,
 so that you have access to style and javascript widgets like a date-picker for example.
 
+Nevertheless you might want to have a better unobtrusiveness for your javascript, meaning
+you want to be able to wrap the forms yourself with your nice layout.
+That is also valuable if you want to have no javascript at all.
+
+This is exactly what the option `_no_wrap` is for. Basically if you want that,
+it is better to have your Backend middleware before the API in the Rack stack:
+
+    map '/' do
+      run Frontend
+    end
+
+    map '/admin' do
+      use Rack::Auth::Basic, "your-realm" do |username, password|
+        [username, password] == ['username', 'password']
+      end
+      use Backend
+      run BackendAPI
+    end
+
+Then what you do is that you make your Backend middleware aware that if the GET param
+`_no_wrap` is used, it has to forward the request and then wrap the body:
+
+    class Backend
+      def initialize(app); @app = app; end
+      def call(env)
+        if Rack::Request.new(env)['_no_wrap']
+          status, header, body = @app.call(env)
+          res = Rack::Response.new('<!-- ', status, header)
+          if body.respond_to? :to_str
+            res.write body.to_str
+          elsif body.respond_to?(:each)
+            body.each { |part|
+              res.write part.to_s
+            }
+          end
+          res.write(' -->')
+          res.finish
+        else
+          [200, {'Content-Type'=>'text/plain'}, ['not wrapped']]
+        end
+      end
+    end
+
+Here, if the param `_no_wrap` is used, this middleware will ask the response to the API middleware
+and then will create a new Response with the body wrapped between `<!-- ` and ` -->`.
+
 HOW TO PLUG AN ORM
 ==================
 
@@ -204,6 +250,7 @@ CHANGE LOG
 0.0.1 First version
 0.0.2 Accept CamelCased class names
 0.0.3 Fix Form mockup
+0.0.4 Partial available not only via XHR but also via `_no_wrap` param
 
 COPYRIGHT
 =========

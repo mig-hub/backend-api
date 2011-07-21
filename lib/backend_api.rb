@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,0,3]
+  VERSION = [0,0,4]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -51,7 +51,7 @@ class BackendAPI
   def get
     @model_instance ||= @model_class.backend_post
     @model_instance.backend_put @req['model']
-    form = @model_instance.backend_form(@req.path, @req['fields'], :destination => @req['_destination'], :submit_text => @req['_submit_text'] )
+    form = @model_instance.backend_form(@req.path, @req['fields'], :destination => @req['_destination'], :submit_text => @req['_submit_text'], :no_wrap => @req['_no_wrap'])
     @res.write(wrap_form(form))
   end
   
@@ -102,14 +102,14 @@ class BackendAPI
         @res.redirect(::Rack::Utils::unescape(@req['_destination']))
       end
     else
-      form = @model_instance.backend_form(@req.path, @req['model'].keys, :destination => @req['_destination'], :submit_text => @req['_submit_text'])
+      form = @model_instance.backend_form(@req.path, @req['model'].keys, :destination => @req['_destination'], :submit_text => @req['_submit_text'], :no_wrap => @req['_no_wrap'])
       @res.write(wrap_form(form))
       @res.status=400 # Bad Request
     end
   end
   
   def wrap_form(form)
-    if @req.xhr?
+    if @req['_no_wrap'] || @req.xhr?
       form
     else
       WRAP % [@model_class_name, form]
