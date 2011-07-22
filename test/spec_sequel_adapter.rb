@@ -65,6 +65,12 @@ describe 'Sequel Adapter' do
     f.should.match(/name='_submit_text' value='CREATE'/)
   end
   
+  should 'Send the list of fields in the correct order' do
+    # That helps keeping the same order when validation doesn't pass
+    # Also it keeps fields not sent when untouched, like checkboxes or images
+    Pic.new.backend_form('/url').scan(/name='fields\[\]'/).size.should==2
+  end
+  
   should 'Have a backend_delete_form method - pure HTTP way of deleting records with HTTP DELETE method' do
     form = Haiku.first.backend_delete_form('/url')
     form.should.match(/name='_method' value='DELETE'/)

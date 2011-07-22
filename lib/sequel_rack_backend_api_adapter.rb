@@ -28,6 +28,9 @@ module ::Sequel::Plugins::RackBackendApiAdapter
       o << "<input type='hidden' name='_destination' value='#{opts[:destination]}' />\n" unless opts[:destination].nil?
       o << "<input type='hidden' name='_submit_text' value='#{opts[:submit_text]}' />\n" unless opts[:submit_text].nil?
       o << "<input type='hidden' name='_no_wrap' value='#{opts[:no_wrap]}' />\n" unless opts[:no_wrap].nil?
+      cols.each do |c|
+        o << "<input type='hidden' name='fields[]' value='#{c}' />\n"
+      end
       o << "<input type='submit' name='save' value='#{opts[:submit_text] || 'SAVE'}' />\n"
       o << "</form>\n"
       o

@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,0,4]
+  VERSION = [0,0,5]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -102,7 +102,7 @@ class BackendAPI
         @res.redirect(::Rack::Utils::unescape(@req['_destination']))
       end
     else
-      form = @model_instance.backend_form(@req.path, @req['model'].keys, :destination => @req['_destination'], :submit_text => @req['_submit_text'], :no_wrap => @req['_no_wrap'])
+      form = @model_instance.backend_form(@req.path, @req['fields']||@req['model'].keys, :destination => @req['_destination'], :submit_text => @req['_submit_text'], :no_wrap => @req['_no_wrap'])
       @res.write(wrap_form(form))
       @res.status=400 # Bad Request
     end

@@ -7,13 +7,13 @@ while only concentrating on the interface.
 All the database interactions are handled by the API.
 
 The project is made with a Rack middleware and a small adapter for the Sequel ORM.
-One of the chapter explains how to create an adpater for another ORM (if you do one, please share).
+One of the chapter explains how to create an adapter for another ORM (if you do one, please share).
 
 Also this tool is part of a toolkit that is made for creating a CMS (in a modular way).
 Here are the others:
 
 - [Crushyform](https://github.com/mig-hub/sequel-crushyform): A Sequel plugin for building forms in a painless way and as flexible as possible.
-- [Stash Magic](https://github.com/mig-hub/stash_magic): A simple attachment system that also handles thumbnails or other styles via ImageMagick. Originaly tested on Sequel ORM but purposedly easy to plug to something else.
+- [Stash Magic](https://github.com/mig-hub/stash_magic): A simple attachment system that also handles thumbnails or other styles via ImageMagick. Originally tested on Sequel ORM but purposedly easy to plug to something else.
 - [Cerberus](https://github.com/mig-hub/cerberus): A Rack middleware for form-based authentication.
 
 This project is still at an early stage so don't hesitate to ask any question if the documentation lacks something.
@@ -42,8 +42,8 @@ HOW TO USE IT
 =============
 
 BackendAPI is a Rack middleware that you have to put before your actual backend/CMS, 
-and generaly after an authentication middleware.
-And it takes care of everything involving interraction with your database.
+and generally after an authentication middleware.
+And it takes care of everything involving interaction with your database.
 
 In reality, it does not HAVE to be with the Backend but it makes sense and that way,
 both share the authentication middleware.
@@ -62,8 +62,8 @@ A rackup stack for your application might look like this:
       run Backend.new
     end
 
-Your backend receives every request that the Restful API doesn't recognize.
-The BackendAPI recognizes requests following this scheme:
+Your backend receives every request that the Restful API doesn't recognise.
+The BackendAPI recognises requests following this scheme:
 
     METHOD /Backend-path/model_class/ID
 
@@ -80,7 +80,7 @@ Then if you need to delete the entry with ID 4:
 
     DELETE /admin/blog_post/4
 
-The API also understands a camelcased class name:
+The API also understands a CamelCased class name:
 
     DELETE /admin/BlogPost/4
 
@@ -93,7 +93,7 @@ and therefore use the right action and method for POST and PUT requests.
 The problem sometimes with a Restful API is that in real life,
 in spite of the fact that not every requests are GET or POST it is sometimes forced.
 The href of a link is always a GET, and the method for a form is
-overriden if it is not GET or POST.
+overridden if it is not GET or POST.
 
 This is why Rack has a very handy middleware called MethodOverride.
 You don't have to `use` it because BackendAPI puts it on the stack for you.
@@ -224,22 +224,22 @@ It is done automatically if the constant `Sequel` is defined (so you have to req
 Here are the methods to implement, most of them are just aliases for having a single name:
 
 - `Model::backend_get( id )` Should return a single database entry with the id provided
-- `Model::backend_post( hash-of-values )` Generaly equivalent to Model::new, it creates a new entry with provided values and without validating or saving
+- `Model::backend_post( hash-of-values )` Generally equivalent to Model::new, it creates a new entry with provided values and without validating or saving
 - `Model#backend_delete` Instance method that destroys the entry
-- `Model#backend_put( hash-of-values )` Generaly equivalent to Model::update, it updates an existing entry with provided values and without validating or saving
+- `Model#backend_put( hash-of-values )` Generally equivalent to Model::update, it updates an existing entry with provided values and without validating or saving
 
 Others are slightly more sophisticated:
 
 - `Model#backend_save?` Returns true if the entry is validated and saved. It generally triggers the error messages for the form as well.
 - `Model#default_backend_columns` This the list of columns in the forms when the list of fields is not provided via `fields` option
 - `Model#backend_form( action_url, columns=nil, options={} )` It is only the wrapping of the form without the actual fields. Try to implement it like the Sequel one.
-- `Model#backend_fields( columns )` These are the actual fields. There is a default behavior that basically puts a textarea for everything. That works in most cases but this is meant to be overriden for a better solution. We recommand [Crushyform](https://rubygems.org/gems/sequel-crushyform) for Sequel because we did it so we know it plays well with BackendAPI, and also because you don't have anything more to do. BackendAPI knows you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) and use it to create the fields.
+- `Model#backend_fields( columns )` These are the actual fields. There is a default behaviour that basically puts a `textarea` for everything. That works in most cases but this is meant to be overridden for a better solution. We recommend [Crushyform](https://rubygems.org/gems/sequel-crushyform) for Sequel because we did it so we know it plays well with BackendAPI, and also because you don't have anything more to do. BackendAPI knows you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) and use it to create the fields.
 - `Model#backend_delete_form( action_url, options={})` Basically sugar for Model#backend_form but with an empty array for columns, and these options `{:submit_text=>'X', :method=>'DELETE'}` predefined which you can override. We've seen before that it is for creating DELETE forms.
 
 THANX
 =====
 
-I'd like to thank [Manveru](https://github.com/manveru), [Pistos](https://github.com/pistos) and many others on the #ramaze IRC channel for being friendly, helpful and obviously savy.
+I'd like to thank [Manveru](https://github.com/manveru), [Pistos](https://github.com/pistos) and many others on the #ramaze IRC channel for being friendly, helpful and obviously savvy.
 
 Also I'd like to thank [Konstantin Haase](https://github.com/rkh) for the same reasons as he helped me many times on #rack issues,
 and because [almost-sinatra](https://github.com/rkh/almost-sinatra) is just made with the 8 nicest lines of code to read.

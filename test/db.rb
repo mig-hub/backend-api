@@ -35,6 +35,7 @@ end
 class Pic < ::Sequel::Model
   set_schema do
     primary_key :id
+    String :name
     String :image, :crushyform=>{:type=>:attachment}
   end
   create_table unless table_exists?
