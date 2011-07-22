@@ -227,6 +227,11 @@ describe 'API Put' do
     res.body.should==('<!-- '+compared.backend_form('/haiku/3',['title'], {:no_wrap=>'true'})+' -->')
     res.body.should.match(/name='_no_wrap'.*value='true'/)
   end
+  
+  should "Consider that a PUT request without an ID is a bulk update of position field (re-order)" do
+    req_lint(BackendAPI.new).put('/TopFive', :params => {'TopFive'=>['2','3','1','5','4']})
+    TopFive.order(:position).map(:flavour).should==['Vanilla','Chocolate','Strawberry','Apricot','Coconut']
+  end
 end
 
 describe 'API Delete' do

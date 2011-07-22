@@ -153,6 +153,25 @@ The option `:submit_text` is also available through the API as `_submit_text`.
 It says "SAVE" by default but you might want it to say "CREATE" and "UPDATE" in appropriate cases,
 like we did in the example.
 
+SORTING
+=======
+
+The way I implemented it might be a bit awkward, but I needed that option.
+Basically when you use a PUT request whithout an idea, the API assume that you want to sort the entries of the class.
+For instance:
+
+    PUT /admin/TopFive
+
+Then it will look for the parameter that has the name of the class which should be a list of ids.
+And it will update each entry with its position field set to the position in the array.
+That is more or less what people are used to do when sorting via javascript.
+
+The position field is obviously known by the ORM.
+For Sequel (which adapter is included) it assume that you use the `:list` plugin.
+it is shipped with Sequel.
+
+Still a work in progress but it satisfies the tests so far.
+
 A LITTLE BIT OF JAVASCRIPT
 ==========================
 
@@ -225,6 +244,7 @@ Here are the methods to implement, most of them are just aliases for having a si
 
 - `Model::backend_get( id )` Should return a single database entry with the id provided
 - `Model::backend_post( hash-of-values )` Generally equivalent to Model::new, it creates a new entry with provided values and without validating or saving
+- `Model::sort( array-of-ids )` It is used to do a bulk update of the position field, hence: re-order
 - `Model#backend_delete` Instance method that destroys the entry
 - `Model#backend_put( hash-of-values )` Generally equivalent to Model::update, it updates an existing entry with provided values and without validating or saving
 
@@ -235,6 +255,13 @@ Others are slightly more sophisticated:
 - `Model#backend_form( action_url, columns=nil, options={} )` It is only the wrapping of the form without the actual fields. Try to implement it like the Sequel one.
 - `Model#backend_fields( columns )` These are the actual fields. There is a default behaviour that basically puts a `textarea` for everything. That works in most cases but this is meant to be overridden for a better solution. We recommend [Crushyform](https://rubygems.org/gems/sequel-crushyform) for Sequel because we did it so we know it plays well with BackendAPI, and also because you don't have anything more to do. BackendAPI knows you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) and use it to create the fields.
 - `Model#backend_delete_form( action_url, options={})` Basically sugar for Model#backend_form but with an empty array for columns, and these options `{:submit_text=>'X', :method=>'DELETE'}` predefined which you can override. We've seen before that it is for creating DELETE forms.
+
+CAN I HELP ?
+============
+
+Of course you can. This project is still in heavy development and it definitely lacks some error checking and stuff.
+So do not hesitate to fork the project on Github and request a `pull`. If you don't use Github, you still can send a patch.
+But that's less fun isn't it?
 
 THANX
 =====

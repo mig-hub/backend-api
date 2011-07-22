@@ -57,8 +57,12 @@ class BackendAPI
   
   # Update
   def put
-    @model_instance.backend_put @req['model']
-    save_and_respond
+    if @id.nil? && @req[@model_class_name]
+      @model_class.sort(@req[@model_class_name])
+    else
+      @model_instance.backend_put @req['model']
+      save_and_respond
+    end
   end
   
   # Delete

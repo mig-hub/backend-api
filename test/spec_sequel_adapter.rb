@@ -82,4 +82,9 @@ describe 'Sequel Adapter' do
     form.scan(/input/).size.should==4
   end
   
+  should "Be able to sort entries with a list of IDs" do
+    TopFive.sort([2,3,1,5,4])
+    TopFive.order(:position).map(:flavour).should==['Vanilla','Chocolate','Strawberry','Apricot','Coconut']
+  end
+  
 end

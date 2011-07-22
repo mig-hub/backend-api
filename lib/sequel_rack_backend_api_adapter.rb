@@ -1,6 +1,11 @@
 module ::Sequel::Plugins::RackBackendApiAdapter
   
   module ClassMethods
+    def sort(list)
+      list.each_with_index do |id, position|
+        self[id].update(position_field=>position)
+      end
+    end
   end
   
   module InstanceMethods
