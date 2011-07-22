@@ -59,7 +59,7 @@ A rackup stack for your application might look like this:
         [username, password] == ['username', 'password']
       end
       use BackendAPI
-      run Backend
+      run Backend.new
     end
 
 Your backend receives every request that the Restful API doesn't recognize.
@@ -180,7 +180,7 @@ it is better to have your Backend middleware before the API in the Rack stack:
         [username, password] == ['username', 'password']
       end
       use Backend
-      run BackendAPI
+      run BackendAPI.new
     end
 
 Then what you do is that you make your Backend middleware aware that if the GET param
