@@ -156,8 +156,8 @@ like we did in the example.
 SORTING
 =======
 
-The way I implemented it might be a bit awkward, but I needed that option.
-Basically when you use a PUT request whithout an idea, the API assume that you want to sort the entries of the class.
+The way I implemented it for the moment might be a bit awkward, but I needed that option.
+Basically when you use a PUT request without an ID, the API assumes that you want to sort the entries of the class.
 For instance:
 
     PUT /admin/TopFive
@@ -166,9 +166,14 @@ Then it will look for the parameter that has the name of the class which should 
 And it will update each entry with its position field set to the position in the array.
 That is more or less what people are used to do when sorting via javascript.
 
+    TopFive[]=4&TopFive[]=2&TopFive[]=1&TopFive[]=3
+
+This is an example of a query string for the order: 4,2,1,3. But this is just an example, it has to be a PUT request
+or a POST request with method override.
+
 The position field is obviously known by the ORM.
-For Sequel (which adapter is included) it assume that you use the `:list` plugin.
-it is shipped with Sequel.
+For Sequel (which adapter is included) it assumes that you use the `:list` plugin.
+It is shipped with Sequel.
 
 Still a work in progress but it satisfies the tests so far.
 
@@ -244,7 +249,6 @@ Here are the methods to implement, most of them are just aliases for having a si
 
 - `Model::backend_get( id )` Should return a single database entry with the id provided
 - `Model::backend_post( hash-of-values )` Generally equivalent to Model::new, it creates a new entry with provided values and without validating or saving
-- `Model::sort( array-of-ids )` It is used to do a bulk update of the position field, hence: re-order
 - `Model#backend_delete` Instance method that destroys the entry
 - `Model#backend_put( hash-of-values )` Generally equivalent to Model::update, it updates an existing entry with provided values and without validating or saving
 
@@ -255,6 +259,7 @@ Others are slightly more sophisticated:
 - `Model#backend_form( action_url, columns=nil, options={} )` It is only the wrapping of the form without the actual fields. Try to implement it like the Sequel one.
 - `Model#backend_fields( columns )` These are the actual fields. There is a default behaviour that basically puts a `textarea` for everything. That works in most cases but this is meant to be overridden for a better solution. We recommend [Crushyform](https://rubygems.org/gems/sequel-crushyform) for Sequel because we did it so we know it plays well with BackendAPI, and also because you don't have anything more to do. BackendAPI knows you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) and use it to create the fields.
 - `Model#backend_delete_form( action_url, options={})` Basically sugar for Model#backend_form but with an empty array for columns, and these options `{:submit_text=>'X', :method=>'DELETE'}` predefined which you can override. We've seen before that it is for creating DELETE forms.
+- `Model::sort( array-of-ids )` It is used to do a bulk update of the position field, hence: re-order
 
 CAN I HELP ?
 ============
@@ -278,6 +283,8 @@ CHANGE LOG
 0.0.2 Accept CamelCased class names
 0.0.3 Fix Form mockup
 0.0.4 Partial available not only via XHR but also via `_no_wrap` param
+0.0.5 Ordered list of fields to keep before validation
+0.1.0 Introduce sorting functionality
 
 COPYRIGHT
 =========
