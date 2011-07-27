@@ -87,4 +87,8 @@ describe 'Sequel Adapter' do
     TopFive.order(:position).map(:flavour).should==['Vanilla','Chocolate','Strawberry','Apricot','Coconut']
   end
   
+  should "Have an instance method called backend_show that says 'OK' by default" do
+    Haiku[1].backend_show.should=='OK'
+  end
+  
 end

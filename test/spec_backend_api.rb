@@ -95,6 +95,16 @@ describe 'API Post' do
     res.status.should==201
   end
   
+  should "Send the Model#backend_show on success" do
+    res = req_lint(BackendAPI.new).post('/haiku', :params => {'model' => {'body' => "..."}})
+    res.status.should==201
+    res.body.should.match(/Me, the Haiku/)
+    res.body.should.match(/doctype/)
+    res = req_lint(BackendAPI.new).post('/haiku', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest", :params => {'model' => {'body' => "///"}})
+    res.status.should==201
+    res.body.should=='Me, the Haiku'
+  end
+  
   should "Send back the appropriate form when the creation is not valid" do
     
     res = req_lint(BackendAPI.new).post('/haiku', :params => {'model' => {'title' => '13'}})
@@ -184,6 +194,16 @@ describe 'API Put' do
   should "Not break if one updates with no changes" do
     res = req_lint(BackendAPI.new).put('/haiku/3')
     res.status.should==201
+  end
+  
+  should "Send the Model#backend_show on success" do
+    res = req_lint(BackendAPI.new).put('/haiku/3', :params => {'model' => {'body' => "..."}})
+    res.status.should==201
+    res.body.should.match(/Me, the Haiku/)
+    res.body.should.match(/doctype/)
+    res = req_lint(BackendAPI.new).put('/haiku/3', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest", :params => {'model' => {'body' => "///"}})
+    res.status.should==201
+    res.body.should=='Me, the Haiku'
   end
   
   should "Send back the appropriate form when the creation is not valid" do

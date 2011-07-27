@@ -60,6 +60,7 @@ module ::Sequel::Plugins::RackBackendApiAdapter
 
     # Can be overridden
     def default_backend_columns; columns - [:id]; end
+    def backend_show; 'OK'; end
     
   end
   

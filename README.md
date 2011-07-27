@@ -153,6 +153,11 @@ The option `:submit_text` is also available through the API as `_submit_text`.
 It says "SAVE" by default but you might want it to say "CREATE" and "UPDATE" in appropriate cases,
 like we did in the example.
 
+Another thing to note is that you don't have to use a destination for when something is created or updated.
+If you do not use destination, the API will call the instance method `Model#backend_show` on the entry.
+By default it just says `'OK'` but you can override the method in order to send whatever you want.
+This comes handy when you use ajax and want a representation of the entry once it's created.
+
 SORTING
 =======
 
@@ -259,6 +264,7 @@ Others are slightly more sophisticated:
 - `Model#backend_form( action_url, columns=nil, options={} )` It is only the wrapping of the form without the actual fields. Try to implement it like the Sequel one.
 - `Model#backend_fields( columns )` These are the actual fields. There is a default behaviour that basically puts a `textarea` for everything. That works in most cases but this is meant to be overridden for a better solution. We recommend [Crushyform](https://rubygems.org/gems/sequel-crushyform) for Sequel because we did it so we know it plays well with BackendAPI, and also because you don't have anything more to do. BackendAPI knows you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) and use it to create the fields.
 - `Model#backend_delete_form( action_url, options={})` Basically sugar for Model#backend_form but with an empty array for columns, and these options `{:submit_text=>'X', :method=>'DELETE'}` predefined which you can override. We've seen before that it is for creating DELETE forms.
+- `Model#backend_show` What is sent when PUT or POST is successful and there is no `_destination`. Default is `'OK'`
 - `Model::sort( array-of-ids )` It is used to do a bulk update of the position field, hence: re-order
 
 CAN I HELP ?
@@ -285,6 +291,7 @@ CHANGE LOG
 0.0.4 Partial available not only via XHR but also via `_no_wrap` param
 0.0.5 Ordered list of fields to keep before validation
 0.1.0 Introduce sorting functionality
+0.2.0 Control what you send on 201 responses
 
 COPYRIGHT
 =========

@@ -16,6 +16,7 @@ class Haiku < ::Sequel::Model
   def validate
     errors[:title] << "Should start with a decent char" if title.to_s!='' && title[0]<65
   end
+  def backend_show; 'Me, the Haiku'; end
 end
 
 class Author < ::Sequel::Model
