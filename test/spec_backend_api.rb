@@ -73,6 +73,10 @@ describe 'API Misc' do
     res2.status.should==200
     res1.body.should==res2.body.gsub('camel_cased_class', 'CamelCasedClass')
   end
+  
+  should "Only accept defined constants before eval (security)" do
+    lambda{req_lint(BackendAPI.new).get('/*ca%20mel_cas-ed_class')}.should.raise(NameError)
+  end
 end
 
 describe 'API Post' do
