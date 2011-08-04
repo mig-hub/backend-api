@@ -39,7 +39,7 @@ describe 'Sequel Adapter' do
   end
   
   should 'Have Method Override value POST/PUT automatically set by default in the form' do
-    Haiku.new.backend_form('/url').should.match(/name='_method' value='POST'/)
+    Haiku.new.backend_form('/url').should.not.match(/name='_method'/)
     Haiku.first.backend_form('/url').should.match(/name='_method' value='PUT'/)
   end
   
@@ -88,7 +88,7 @@ describe 'Sequel Adapter' do
   end
   
   should "Have an instance method called backend_show that says 'OK' by default" do
-    Haiku[1].backend_show.should=='OK'
+    Author[1].backend_show.should=='OK'
   end
   
 end

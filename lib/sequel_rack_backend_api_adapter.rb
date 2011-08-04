@@ -28,8 +28,8 @@ module ::Sequel::Plugins::RackBackendApiAdapter
       fields_list = respond_to?(:crushyform) ? crushyform(cols) : backend_fields(cols)
       o = "<form action='#{url}' method='POST' #{"enctype='multipart/form-data'" if fields_list.match(/type='file'/)} class='backend-form'>\n"
       o << fields_list
-      method = self.new? ? 'POST' : 'PUT'
-      o << "<input type='hidden' name='_method' value='#{opts[:method] || method}' />\n"
+      opts[:method] = 'PUT' if (opts[:method].nil? && !self.new?)
+      o << "<input type='hidden' name='_method' value='#{opts[:method]}' />\n" unless opts[:method].nil?
       o << "<input type='hidden' name='_destination' value='#{opts[:destination]}' />\n" unless opts[:destination].nil?
       o << "<input type='hidden' name='_submit_text' value='#{opts[:submit_text]}' />\n" unless opts[:submit_text].nil?
       o << "<input type='hidden' name='_no_wrap' value='#{opts[:no_wrap]}' />\n" unless opts[:no_wrap].nil?
