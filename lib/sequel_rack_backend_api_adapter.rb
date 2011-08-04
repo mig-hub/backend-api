@@ -27,6 +27,7 @@ module ::Sequel::Plugins::RackBackendApiAdapter
       cols ||= default_backend_columns
       fields_list = respond_to?(:crushyform) ? crushyform(cols) : backend_fields(cols)
       o = "<form action='#{url}' method='POST' #{"enctype='multipart/form-data'" if fields_list.match(/type='file'/)} class='backend-form'>\n"
+      o << backend_form_title
       o << fields_list
       opts[:method] = 'PUT' if (opts[:method].nil? && !self.new?)
       o << "<input type='hidden' name='_method' value='#{opts[:method]}' />\n" unless opts[:method].nil?
@@ -42,6 +43,13 @@ module ::Sequel::Plugins::RackBackendApiAdapter
     end
     
     def backend_delete_form(url, opts={}); backend_form(url, [], {:submit_text=>'X', :method=>'DELETE'}.update(opts)); end
+    
+    def backend_form_title
+      n = self.respond_to?(:to_label) ? self.to_label : self.backend_to_label
+      "<h2>#{'Edit ' unless self.new?}#{n}</h2>"
+    end
+    
+    def backend_to_label; [self.new? ? 'New' : nil, model.name, id].compact!.join(' '); end
 
     # Silly but usable form prototype
     # Not really meant to be used in a real case

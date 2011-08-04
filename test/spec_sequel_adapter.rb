@@ -91,4 +91,23 @@ describe 'Sequel Adapter' do
     Author[1].backend_show.should=='OK'
   end
   
+  should "Have default labels for when Model#to_label is not implemented" do
+    NoCrushyform.new.backend_to_label.should=='New NoCrushyform'
+    NoCrushyform[1].backend_to_label.should=='NoCrushyform 1'
+  end
+  
+  should "Have a correct form title for instances" do
+    # No crushyform
+    NoCrushyform.new.backend_form_title.should=='<h2>New NoCrushyform</h2>' # New
+    NoCrushyform[1].backend_form_title.should=='<h2>Edit NoCrushyform 1</h2>' # Edit
+    # Crushyform
+    CamelCasedClass.new.backend_form_title.should=="<h2>#{CamelCasedClass.new.to_label}</h2>" # New
+    TopFive[1].backend_form_title.should=="<h2>Edit #{TopFive[1].to_label}</h2>" # No label
+    Author[1].backend_form_title.should=="<h2>Edit #{Author[1].to_label}</h2>" # Label
+  end
+  
+  should 'Include title in the form' do
+    Author[1].backend_form('/url').should.match(/#{Regexp.escape(Author[1].backend_form_title)}/)
+  end
+  
 end

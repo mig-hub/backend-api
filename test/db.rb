@@ -1,6 +1,5 @@
 require 'sequel'
 ::Sequel::Model.plugin :schema
-::Sequel::Model.plugin :crushyform rescue nil
 DB = ::Sequel.sqlite
 
 class Haiku < ::Sequel::Model
@@ -12,6 +11,7 @@ class Haiku < ::Sequel::Model
     foreign_key :author_id, :authors
   end
   create_table unless table_exists?
+  plugin :crushyform
   many_to_one :author
   def validate
     errors[:title] << "Should start with a decent char" if title.to_s!='' && title[0]<65
@@ -26,6 +26,7 @@ class Author < ::Sequel::Model
     String :surname, :crushyform=>{:required=>true}
   end
   create_table unless table_exists?
+  plugin :crushyform
   one_to_many :haikus
   def validate
     errors[:name] << 'Cannot be blank' if name.to_s==''
@@ -40,6 +41,7 @@ class Pic < ::Sequel::Model
     String :image, :crushyform=>{:type=>:attachment}
   end
   create_table unless table_exists?
+  plugin :crushyform
 end
 
 class CamelCasedClass < ::Sequel::Model
@@ -48,6 +50,7 @@ class CamelCasedClass < ::Sequel::Model
     String :name
   end
   create_table unless table_exists?
+  plugin :crushyform
 end
 
 class TopFive < ::Sequel::Model
@@ -57,7 +60,16 @@ class TopFive < ::Sequel::Model
     String :flavour
   end
   create_table unless table_exists?
+  plugin :crushyform
   plugin :list
+end
+
+class NoCrushyform < ::Sequel::Model
+  set_schema do
+    primary_key :id
+    String :name
+  end
+  create_table unless table_exists?
 end
 
 Haiku.create( :title=>'Autumn', :body=>"Rust the ground\nFlush the branches\nReveal the trees" )
@@ -73,3 +85,5 @@ TopFive.create(:flavour=>'Vanilla')
 TopFive.create(:flavour=>'Chocolate')
 TopFive.create(:flavour=>'Coconut')
 TopFive.create(:flavour=>'Apricot')
+
+NoCrushyform.create(:name=>'Fernando')
