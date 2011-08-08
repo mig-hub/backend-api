@@ -25,9 +25,14 @@ module ::Sequel::Plugins::RackBackendApiAdapter
     
     def backend_form(url, cols=nil, opts={})
       cols ||= default_backend_columns
-      fields_list = respond_to?(:crushyform) ? crushyform(cols) : backend_fields(cols)
+      if block_given?
+        fields_list = ''
+        yield(fields_list)
+      else
+        fields_list = respond_to?(:crushyform) ? crushyform(cols) : backend_fields(cols)
+      end
       o = "<form action='#{url}' method='POST' #{"enctype='multipart/form-data'" if fields_list.match(/type='file'/)} class='backend-form'>\n"
-      o << backend_form_title
+      o << backend_form_title unless block_given?
       o << fields_list
       opts[:method] = 'PUT' if (opts[:method].nil? && !self.new?)
       o << "<input type='hidden' name='_method' value='#{opts[:method]}' />\n" unless opts[:method].nil?

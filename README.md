@@ -293,6 +293,7 @@ CHANGE LOG
 0.1.0 Introduce sorting functionality
 0.2.0 Control what you send on 201 responses
 0.2.1 Have a title in forms + Only use `_method` if not POST
+0.2.2 Backend form should accept a block for populating the fields
 
 COPYRIGHT
 =========

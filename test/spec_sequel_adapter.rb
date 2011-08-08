@@ -110,4 +110,10 @@ describe 'Sequel Adapter' do
     Author[1].backend_form('/url').should.match(/#{Regexp.escape(Author[1].backend_form_title)}/)
   end
   
+  should 'Yield the given block to populate the form fields' do
+    Author[1].backend_form('/url'){|out| out << '<!-- YIELDED -->'}.should.match(/<!-- YIELDED -->/)
+    Author[1].backend_form('/url', [:name]){|out|}.should.not.match(/#{Regexp.escape Author[1].crushyfield(:name)}/)
+    Author[1].backend_form('/url'){|out| out << '<!-- YIELDED -->'}.should.not.match(/#{Regexp.escape(Author[1].backend_form_title)}/)
+  end
+  
 end
