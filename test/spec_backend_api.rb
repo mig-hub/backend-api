@@ -266,6 +266,10 @@ describe 'API Delete' do
     Haiku[1].should==nil
   end
   
+  should "Send a 404 if the entry does not exist" do
+    req_lint(BackendAPI.new).delete('/haiku/0').status.should==404
+  end
+  
   should "Work with MethodOverride" do
     req_lint(BackendAPI.new(dummy_app)).post('/haiku/2', :params => {'_method' => 'DELETE'})
     Haiku[2].should==nil
