@@ -81,7 +81,7 @@ class BackendAPI
   def build_model_vars
     @model_class_name = camel_case(@model_name)
     if !@model_name.nil? && ::Object.const_defined?(@model_class_name)
-      @model_class = eval(@model_class_name)
+      @model_class = Kernel.const_get(@model_class_name)
       @model_instance = @model_class.backend_get(@id.to_i) unless @id.nil?
       @req['model'] ||= {}
     else
