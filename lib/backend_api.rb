@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,2,2]
+  VERSION = [0,2,3]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -84,11 +84,16 @@ class BackendAPI
       @model_class = Kernel.const_get(@model_class_name)
       @model_instance = @model_class.backend_get(@id.to_i) unless @id.nil?
       @req['model'] ||= {}
+      send_404 if @model_instance.nil?&&!@id.nil?
     else
-      @res.status=404 # Not Found
-      @res.headers['X-Cascade']='pass'
-      @res.write 'Not Found'
+      send_404
     end
+  end
+  
+  def send_404
+    @res.status=404 # Not Found
+    @res.headers['X-Cascade']='pass'
+    @res.write 'Not Found'
   end
   
   def camel_case(s)

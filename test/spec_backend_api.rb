@@ -94,6 +94,10 @@ describe 'API Post' do
     Haiku.filter(:title => 'Summer is not new !!!').first.id.should==4
   end
   
+  should "Send a 404 if the entry does not exist" do
+    req_lint(BackendAPI.new).post('/haiku/0', :params => {'model' => {'title' => 'Summer is not new !!!'}}).status.should==404
+  end
+  
   should "Accept a new entry with no attributes as long as it is valid" do
     res = req_lint(BackendAPI.new).post('/haiku')
     res.status.should==201
@@ -162,6 +166,10 @@ describe 'API Get' do
     req_lint(BackendAPI.new).get('/haiku/3').body.should==wrap('Haiku', Haiku[3].backend_form('/haiku/3'))
   end
   
+  should "Send a 404 if the entry does not exist" do
+    req_lint(BackendAPI.new).get('/haiku/0').status.should==404
+  end
+  
   should "Be able to send a form with selected set of fields" do
     req_lint(BackendAPI.new).get('/haiku', :params => {'fields' => ['title']}).body.should==wrap('Haiku', Haiku.new.backend_form('/haiku', ['title']))
     req_lint(BackendAPI.new).get('/haiku/3', :params => {'fields' => ['title']}).body.should==wrap('Haiku', Haiku[3].backend_form('/haiku/3', ['title']))
@@ -188,6 +196,10 @@ describe 'API Put' do
     haiku = Haiku[3]
     haiku.body.should=="Maybe I have no inspiration\nBut at least\nIt should be on three lines"
     haiku.title.should=='Spring'
+  end
+  
+  should "Send a 404 if the entry does not exist" do
+    req_lint(BackendAPI.new).put('/haiku/0', :params => {'model' => {'body' => "Maybe I have no inspiration\nBut at least\nIt should be on three lines"}}).status.should==404
   end
   
   should "Work with MethodOverride" do
