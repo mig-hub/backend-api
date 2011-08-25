@@ -256,14 +256,17 @@ Here are the methods to implement, most of them are just aliases for having a si
 - `Model::backend_post( hash-of-values )` Generally equivalent to Model::new, it creates a new entry with provided values and without validating or saving
 - `Model#backend_delete` Instance method that destroys the entry
 - `Model#backend_put( hash-of-values )` Generally equivalent to Model::update, it updates an existing entry with provided values and without validating or saving
+- `Model#backend_values` returns a Hash with the values of the entry
 
 Others are slightly more sophisticated:
 
 - `Model#backend_save?` Returns true if the entry is validated and saved. It generally triggers the error messages for the form as well.
 - `Model#default_backend_columns` This the list of columns in the forms when the list of fields is not provided via `fields` option
+- `Model#cloning_backend_columns` Default columns used when cloning (allows to get rid of fields like images that you may not wish to clone).
 - `Model#backend_form( action_url, columns=nil, options={} )` It is only the wrapping of the form without the actual fields. Try to implement it like the Sequel one.
 - `Model#backend_fields( columns )` These are the actual fields. There is a default behaviour that basically puts a `textarea` for everything. That works in most cases but this is meant to be overridden for a better solution. We recommend [Crushyform](https://rubygems.org/gems/sequel-crushyform) for Sequel because we did it so we know it plays well with BackendAPI, and also because you don't have anything more to do. BackendAPI knows you have [Crushyform](https://rubygems.org/gems/sequel-crushyform) and use it to create the fields.
 - `Model#backend_delete_form( action_url, options={})` Basically sugar for Model#backend_form but with an empty array for columns, and these options `{:submit_text=>'X', :method=>'DELETE'}` predefined which you can override. We've seen before that it is for creating DELETE forms.
+- `Model#backend_clone_form( action_url, options={})` Like delete form, but for cloning an entry.
 - `Model#backend_show` What is sent when PUT or POST is successful and there is no `_destination`. Default is `'OK'`
 - `Model::sort( array-of-ids )` It is used to do a bulk update of the position field, hence: re-order
 
@@ -295,6 +298,7 @@ CHANGE LOG
 0.2.1 Have a title in forms + Only use `_method` if not POST
 0.2.2 Backend form should accept a block for populating the fields
 0.2.3 Send a 404 if the entry does not exist
+0.3.0 Implement cloning functionality
 
 COPYRIGHT
 =========
