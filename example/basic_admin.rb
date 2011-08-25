@@ -22,7 +22,8 @@ BASIC_ADMIN = proc{
         api_inst_path = "%s/%s" % [api_model_path,m.id]
         link = "<a href='%s?_destination=%s&_submit_text=UPDATE'>%s</a>\n" % [api_inst_path,escaped_path,m.to_label]
         delete_form = m.backend_delete_form(api_inst_path, {:destination=>path})
-        link+delete_form
+        clone_form = m.backend_clone_form(api_model_path, {:destination=>path})
+        link+clone_form+delete_form
       end.join
       [200,{'Content-Type'=>'text/html'},[title,create_link,list]]
     }

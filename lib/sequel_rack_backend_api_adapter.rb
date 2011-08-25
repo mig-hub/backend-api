@@ -18,6 +18,7 @@ module ::Sequel::Plugins::RackBackendApiAdapter
         end
         alias backend_delete destroy
         alias backend_put set
+        alias backend_values values
       end
     end
     
@@ -47,7 +48,12 @@ module ::Sequel::Plugins::RackBackendApiAdapter
       o
     end
     
-    def backend_delete_form(url, opts={}); backend_form(url, [], {:submit_text=>'X', :method=>'DELETE'}.update(opts)); end
+    def backend_delete_form(url, opts={}); backend_form(url, [], {:submit_text=>'X', :method=>'DELETE'}.update(opts)){}; end
+    def backend_clone_form(url, opts={})
+      backend_form(url, [], {:submit_text=>'CLONE', :method=>'POST'}.update(opts)) do |out|
+        out << "<input type='hidden' name='clone_id' value='#{self.id}' />\n"
+      end
+    end
     
     def backend_form_title
       n = self.respond_to?(:to_label) ? self.to_label : self.backend_to_label
@@ -73,6 +79,7 @@ module ::Sequel::Plugins::RackBackendApiAdapter
 
     # Can be overridden
     def default_backend_columns; columns - [:id]; end
+    def cloning_backend_columns; default_backend_columns; end
     def backend_show; 'OK'; end
     
   end

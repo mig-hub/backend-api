@@ -154,6 +154,26 @@ describe 'API Post' do
     res.body.should==('<!-- '+compared.backend_form('/haiku',['title'], {:no_wrap=>'true'})+' -->')
     res.body.should.match(/name='_no_wrap'.*value='true'/)
   end
+  
+  should 'be able to handle cloning with fields provided' do
+    res = req_lint(BackendAPI.new).post('/haiku', :params => {'clone_id' => '1', 'fields' => ['body']})
+    res.status.should==201
+    cloned = Haiku[1]
+    haiku = Haiku.order(:id).last
+    haiku.id.should.not==cloned.id
+    haiku.title.should==nil
+    haiku.body.should==cloned.body
+  end
+  
+  should 'be able to handle cloning using cloning_backend_columns' do
+    res = req_lint(BackendAPI.new).post('/haiku', :params => {'clone_id' => '1'})
+    res.status.should==201
+    cloned = Haiku[1]
+    haiku = Haiku.order(:id).last
+    haiku.id.should.not==cloned.id
+    haiku.title.should==cloned.title
+    haiku.body.should==cloned.body
+  end
 end
 
 describe 'API Get' do

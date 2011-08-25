@@ -16,6 +16,10 @@ describe 'Sequel Adapter' do
     Haiku.new.default_backend_columns.should==(Haiku.columns - [:id])
   end
   
+  should 'Define Model#cloning_backend_columns' do
+    Haiku.new.cloning_backend_columns.should==(Haiku.columns - [:id])
+  end
+  
   should 'Make forms for the correct action' do
     Haiku.new.backend_form('/url').should.match(/action='\/url'/)
   end
@@ -82,6 +86,14 @@ describe 'Sequel Adapter' do
     form.scan(/input/).size.should==4
   end
   
+  should 'Have a backend_clone_form method - pure HTTP way of cloning records with HTTP POST method' do
+    form = Haiku.first.backend_clone_form('/url')
+    form.should.match(/name='_method' value='POST'/)
+    form.should.match(/<input type='submit' name='save' value='CLONE' \/>/)
+    form.should.match(/name='clone_id' value='#{Haiku.first.id}'/)
+    form.scan(/input/).size.should==4
+  end
+  
   should "Be able to sort entries with a list of IDs" do
     TopFive.sort([2,3,1,5,4])
     TopFive.order(:position).map(:flavour).should==['Vanilla','Chocolate','Strawberry','Apricot','Coconut']
@@ -108,6 +120,13 @@ describe 'Sequel Adapter' do
   
   should 'Include title in the form' do
     Author[1].backend_form('/url').should.match(/#{Regexp.escape(Author[1].backend_form_title)}/)
+  end
+  
+  should 'Not include a title on delete and clone forms' do
+    form = Haiku.first.backend_delete_form('/url')
+    form.should.not.match(/<h2>/)
+    form = Haiku.first.backend_clone_form('/url')
+    form.should.not.match(/<h2>/)
   end
   
   should 'Yield the given block to populate the form fields' do
