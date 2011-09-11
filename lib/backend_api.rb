@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,3,0]
+  VERSION = [0,3,1]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -103,7 +103,7 @@ class BackendAPI
   
   def camel_case(s)
     return if s.nil?
-    c = s[0]
+    c = RUBY_VERSION>='1.9.0' ? s[0].ord : s[0]
     c>=65&&c<=90 ? s : s.split('_').map{|e|e.capitalize}.join
   end
   
