@@ -86,7 +86,7 @@ class BackendAPI
       @clone_instance = @model_class.backend_get(@req['clone_id']) unless @req['clone_id'].nil?
       unless @clone_instance.nil?
         @req['fields'] ||= @clone_instance.cloning_backend_columns.map{|k|k.to_s}
-        @req['model'] = @clone_instance.backend_values.select{|k,v| @req['fields'].include?(k.to_s)}
+        @req['model'] = @clone_instance.backend_values.reject{|k,v| !@req['fields'].include?(k.to_s)}
       end
       @req['model'] ||= {}
       send_404 if @model_instance.nil?&&!@id.nil?
