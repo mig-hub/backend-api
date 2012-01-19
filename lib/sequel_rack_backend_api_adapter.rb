@@ -1,6 +1,7 @@
 module ::Sequel::Plugins::RackBackendApiAdapter
   
   module ClassMethods
+    def backend_get(id); self[id.to_i]; end
     def sort(list)
       list.each_with_index do |id, position|
         self[id].update(position_field=>position)
@@ -13,7 +14,6 @@ module ::Sequel::Plugins::RackBackendApiAdapter
     def self.included(model_class)
       model_class.class_eval do
         class << self
-          alias backend_get []
           alias backend_post new
         end
         alias backend_delete destroy

@@ -299,6 +299,7 @@ CHANGE LOG
 0.2.2 Backend form should accept a block for populating the fields
 0.2.3 Send a 404 if the entry does not exist
 0.3.0 Implement cloning functionality
+0.3.2 IDs are turned into integers only on the adapter side, not in the middleware
 
 COPYRIGHT
 =========

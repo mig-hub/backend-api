@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,3,1]
+  VERSION = [0,3,2]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -82,8 +82,8 @@ class BackendAPI
     @model_class_name = camel_case(@model_name)
     if !@model_name.nil? && ::Object.const_defined?(@model_class_name)
       @model_class = Kernel.const_get(@model_class_name)
-      @model_instance = @model_class.backend_get(@id.to_i) unless @id.nil?
-      @clone_instance = @model_class.backend_get(@req['clone_id'].to_i) unless @req['clone_id'].nil?
+      @model_instance = @model_class.backend_get(@id) unless @id.nil?
+      @clone_instance = @model_class.backend_get(@req['clone_id']) unless @req['clone_id'].nil?
       unless @clone_instance.nil?
         @req['fields'] ||= @clone_instance.cloning_backend_columns.map{|k|k.to_s}
         @req['model'] = @clone_instance.backend_values.select{|k,v| @req['fields'].include?(k.to_s)}
