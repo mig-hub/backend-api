@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,3,3]
+  VERSION = [0,3,4]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -118,7 +118,11 @@ class BackendAPI
     else
       form = @model_instance.backend_form(@req.path, @req['fields']||@req['model'].keys, :destination => @req['_destination'], :submit_text => @req['_submit_text'], :no_wrap => @req['_no_wrap'])
       @res.write(wrap_response(form))
-      @res.status=400 # Bad Request
+      # Bad Request
+      # I used 400 code before but it does not work through Ajax anymore
+      # At least on Safari
+      # Content is not passed with this code
+      @res.status=200
     end
   end
   

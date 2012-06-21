@@ -116,14 +116,14 @@ describe 'API Post' do
   should "Send back the appropriate form when the creation is not valid" do
     
     res = req_lint(BackendAPI.new).post('/haiku', :params => {'model' => {'title' => '13'}})
-    res.status.should==400
+    res.status.should==200
     compared = Haiku.new.set('title' => '13')
     compared.valid?
     res.body.should==wrap('Haiku', compared.backend_form('/haiku', ['title']))
     
     # Not wrapped when XHR
     res = req_lint(BackendAPI.new).post('/haiku', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest", :params => {'model' => {'title' => '13'}})
-    res.status.should==400
+    res.status.should==200
     res.body.should==compared.backend_form('/haiku', ['title'])
   end
   
@@ -245,14 +245,14 @@ describe 'API Put' do
   should "Send back the appropriate form when the creation is not valid" do
     
     res = req_lint(BackendAPI.new).put('/haiku/3', :params => {'model' => {'title' => '13'}})
-    res.status.should==400
+    res.status.should==200
     compared = Haiku[3].set('title' => '13')
     compared.valid?
     res.body.should==wrap('Haiku', compared.backend_form('/haiku/3', ['title']))
     
     # Not wrapped when XHR
     res = req_lint(BackendAPI.new).put('/haiku/3', "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest", :params => {'model' => {'title' => '13'}})
-    res.status.should==400
+    res.status.should==200
     res.body.should==compared.backend_form('/haiku/3', ['title'])
   end
   
