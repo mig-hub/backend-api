@@ -1,5 +1,5 @@
 class BackendAPI
-  VERSION = [0,3,4]
+  VERSION = [0,3,5]
   WRAP = <<-EOT
   <!doctype html>
   <html>
@@ -19,6 +19,7 @@ class BackendAPI
   def call!(env)
     @req = ::Rack::Request.new(env)
     @res = ::Rack::Response.new
+    @res.headers['Content-Type'] = 'text/html'
     
     # Simple dispatcher
     @model_name, @id, *a = @req.path_info.split('/').find_all{|s| s!=''}

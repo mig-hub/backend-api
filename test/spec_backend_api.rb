@@ -8,7 +8,7 @@ Bacon.summary_on_exit
 # Helpers
 F = ::File
 D = ::Dir
-ROOT = F.dirname(__FILE__)+'/..'
+ROOT = F.expand_path(F.dirname(__FILE__)+'/..')
 def req_lint(app)
   ::Rack::MockRequest.new(::Rack::Lint.new(app))
 end
@@ -179,11 +179,15 @@ end
 describe 'API Get' do
   
   should "Return the form for a fresh entry when no id is provided" do
-    req_lint(BackendAPI.new).get('/haiku').body.should==wrap('Haiku', Haiku.new.backend_form('/haiku'))
+    res = req_lint(BackendAPI.new).get('/haiku')
+    res.body.should==wrap('Haiku', Haiku.new.backend_form('/haiku'))
+    res.content_type.should=='text/html'
   end
   
   should "Return the form for an update when id is provided" do
-    req_lint(BackendAPI.new).get('/haiku/3').body.should==wrap('Haiku', Haiku[3].backend_form('/haiku/3'))
+    res = req_lint(BackendAPI.new).get('/haiku/3')
+    res.body.should==wrap('Haiku', Haiku[3].backend_form('/haiku/3'))
+    res.content_type.should=='text/html'
   end
   
   should "Send a 404 if the entry does not exist" do

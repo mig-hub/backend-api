@@ -14,7 +14,7 @@ class Haiku < ::Sequel::Model
   plugin :crushyform
   many_to_one :author
   def validate
-    errors[:title] << "Should start with a decent char" if title.to_s!='' && title[0]<65
+    errors[:title] << "Should not start with a number" if title.to_s.to_i!=0
   end
   def backend_show; 'Me, the Haiku'; end
 end

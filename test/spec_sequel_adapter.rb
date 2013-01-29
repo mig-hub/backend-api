@@ -5,7 +5,7 @@ Bacon.summary_on_exit
 # Helpers
 F = ::File
 D = ::Dir
-ROOT = F.dirname(__FILE__)+'/..'
+ROOT = F.expand_path(F.dirname(__FILE__)+'/..')
 $:.unshift ROOT+'/lib'
 require ROOT+'/test/db.rb'
 ::Sequel::Model.plugin :rack_backend_api_adapter
