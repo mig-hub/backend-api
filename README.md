@@ -1,3 +1,8 @@
+WARNING
+=======
+
+This project is not maintained anymore because it is now part of [PopulateMe](https:/github.com/mig-hub/populate-me/) which provides this API and much more.
+
 BACKEND API
 ===========
 
